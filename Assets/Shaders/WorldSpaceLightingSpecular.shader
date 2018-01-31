@@ -1,26 +1,26 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 Shader "Learning Shaders/World Space Lighting (Specular)" {
-	Properties {
+    Properties {
         _DiffuseColor ("Diffuse Color", Color) = (1, 1, 1, 1)
         _SpecularColor ("Speculr Color", Color) = (1, 1, 1, 1)
         _RimColor ("Rim Color", Color) = (1, 1, 1, 1)
         _Shininess ("Shininess", Range(1, 1000)) = 10
         _SpecularIntensity ("Specular Intensity", Range(0, 1)) = 1
         _RimIntensity ("Rim Intensity", Range(0, 1)) = 0.5
-	}
-	SubShader {
-		Tags { "RenderType"="Opaque" }
+    }
+    SubShader {
+        Tags { "RenderType"="Opaque" }
         Tags { "LightMode"="ForwardBase" }
-		LOD 100
+        LOD 100
 
-		Pass
-		{
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			
-			#include "UnityCG.cginc"
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            #include "UnityCG.cginc"
             #include "Lighting.cginc"
 
             struct appdata {
@@ -56,8 +56,8 @@ Shader "Learning Shaders/World Space Lighting (Specular)" {
 
                 return skyContribution + equatorContribution + groundContribution;
             }
-			
-			v2f vert (appdata v) {
+            
+            v2f vert (appdata v) {
                 v2f o;
 
                 o.vertex = UnityObjectToClipPos(v.vertex);
@@ -66,9 +66,9 @@ Shader "Learning Shaders/World Space Lighting (Specular)" {
                 o.viewDirection = normalize(mul(unity_ObjectToWorld, v.vertex).xyz - _WorldSpaceCameraPos);
 
                 return o;
-			}
-			
-			fixed4 frag (v2f i) : SV_Target {
+            }
+            
+            fixed4 frag (v2f i) : SV_Target {
                 float3 normal = normalize(i.normal);
                 float3 viewDirection = normalize(i.viewDirection);
 
@@ -78,8 +78,8 @@ Shader "Learning Shaders/World Space Lighting (Specular)" {
                 fixed4 rimLight = _RimColor * _RimIntensity * pow((1 - abs(dot(normal, viewDirection))), 2);
 
                 return ambient + diffuse + specular + rimLight;
-			}
-			ENDCG
-		}
-	}
+            }
+            ENDCG
+        }
+    }
 }
